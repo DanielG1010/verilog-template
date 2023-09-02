@@ -1,6 +1,6 @@
 `default_nettype none
 
-module fir_top #(parameter N = 8, parameter SIZE = 8, parameter NUM_COEFF = 4) (
+module tt_um_fir_top #(parameter N = 8, parameter SIZE = 8, parameter NUM_COEFF = 4) (
     input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
     output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 segment display
     input  wire [7:0] uio_in,   // IOs: Bidirectional Input path
