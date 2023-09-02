@@ -11,6 +11,9 @@ module tt_um_fir_top #(parameter N = 8, parameter SIZE = 8, parameter NUM_COEFF 
     input  wire       rst_n     // reset_n - low to reset
 );
 
+assign uio_out = 0
+assign uio_oe = 0
+
 wire [7:0] serial_in;
 assign serial_in = ui_in;
 
