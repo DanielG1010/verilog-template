@@ -1,48 +1,50 @@
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
+import numpy as np
 
-
-segments = [ 63, 6, 91, 79, 102, 109, 124, 7, 127, 103 ]
+x_n = [ 6, 16, 9, 7, 2, 19, 14, 7, 17, 13 ]
+x_n_z = [0]*4 + x_n
+h_n = [1, 2, 3, 4]
+y_n = np.convolve(x_n, h_n)
+#y_n = np.insert(y_n, 0, 0)
 
 @cocotb.test()
-async def test_7seg(dut):
+async def test_fir(dut):
     dut._log.info("start")
-    clock = Clock(dut.clk, 10, units="us")
+    clock = Clock(dut.clk, 10, units="ns")
     cocotb.start_soon(clock.start())
 
     # reset
     dut._log.info("reset")
     dut.rst_n.value = 0
-    # set the compare value
-    dut.ui_in.value = 1
-    await ClockCycles(dut.clk, 10)
+    dut.ena.value = 0
+    dut.ui_in.value = 0
+
+    await ClockCycles(dut.clk, 20)
     dut.rst_n.value = 1
 
-    # the compare value is shifted 10 bits inside the design to allow slower counting
-    max_count = dut.ui_in.value << 10
-    dut._log.info(f"check all segments with MAX_COUNT set to {max_count}")
-    # check all segments and roll over
-    for i in range(15):
-        dut._log.info("check segment {}".format(i))
-        await ClockCycles(dut.clk, max_count)
-        assert int(dut.segments.value) == segments[i % 10]
+    
+    await ClockCycles(dut.clk, 10)
+    dut.ena.value = 1
+    dut._log.info("Enabling design")
+    await ClockCycles(dut.clk, 10)
+    #print(int(dut.uo_out.value))
 
-        # all bidirectionals are set to output
-        assert dut.uio_oe == 0xFF
+    #dut._log.info(f"uo_out.value: {int(dut.uo_out.value)}")
+
+    dut._log.info("Sending x_n values")
+    # Input the  x_n values
+    await FallingEdge(dut.clk) 
+    for i in range(len(x_n)):
+        
+        dut._log.info(f"Input value x_n: {i}:{dut.ui_in.value} ")
+        dut.ui_in.value = x_n[i]
+        await FallingEdge(dut.clk)
+
+        assert int(dut.uo_out.value) == y_n[i]
 
     # reset
     dut.rst_n.value = 0
-    # set a different compare value
-    dut.ui_in.value = 3
-    await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
-
-    max_count = dut.ui_in.value << 10
-    dut._log.info(f"check all segments with MAX_COUNT set to {max_count}")
-    # check all segments and roll over
-    for i in range(15):
-        dut._log.info("check segment {}".format(i))
-        await ClockCycles(dut.clk, max_count)
-        assert int(dut.segments.value) == segments[i % 10]
+    await ClockCycles(dut.clk, 40)
 
