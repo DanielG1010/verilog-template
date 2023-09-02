@@ -9,10 +9,9 @@ always @(posedge clk) begin
     if (!rst) begin
         out <= 32'b00000001000000010000000100000001;
     end
-end
-
-always @(posedge en) begin
-    out[sel*8 +: 8] <= coeff;
+    if (en) begin
+	out[sel*8 +: 8] <= coeff;
+    end
 end
 
 endmodule

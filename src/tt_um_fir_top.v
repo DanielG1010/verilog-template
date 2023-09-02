@@ -12,7 +12,7 @@ module tt_um_fir_top #(parameter N = 8, parameter SIZE = 8, parameter NUM_COEFF 
 );
 
 assign uio_oe = 0;
-
+assign uo_out = 0;
 wire [7:0] serial_in;
 assign serial_in = uio_in;
 
