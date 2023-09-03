@@ -12,12 +12,20 @@ module tt_um_fir_top #(parameter N = 8, parameter SIZE = 8, parameter NUM_COEFF 
 );
 
 assign uio_oe = 0;
-assign uo_out = 0;
+
+// It's ALIVE !
+assign uo_out[7] = 1;
+
+
 wire [7:0] serial_in;
 assign serial_in = uio_in;
 
 wire [7:0] y_n;
 assign uio_out = y_n;
+
+// Deco y[n] va a 7seg_display
+deco_7seg deco7_seg (.entrada(y_n[7:0]), .salida(uo_out[6:0]));
+
 
 wire [NUM_COEFF*SIZE-1:0] parallel_out;
 

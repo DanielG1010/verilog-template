@@ -9,7 +9,7 @@ always @(posedge clk) begin
     if (!rst) begin
         out <= 32'b00000001000000010000000100000001;
     end
-    if (en) begin
+    else if (en) begin
 	out[sel*8 +: 8] <= coeff;
     end
 end

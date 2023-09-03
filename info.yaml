@@ -9,7 +9,8 @@ project:
     - fir.v
     - shift_register.v
     - tt_um_fir_top.v
-    - coeffs_regs.v 
+    - coeffs_regs.v
+    - deco_7seg.v 
   top_module:  "tt_um_fir_top"      # put the name of your top module here, make it unique by prepending your github username
 
 # How many tiles your design occupies? A single tile is about 167x108 uM.
@@ -24,42 +25,30 @@ yaml_version: 4
 #
 # Here is a great example: https://github.com/davidsiaw/tt02-davidsiaw-stackcalc/blob/38c5647f83aad2aec675d566aa3d67b98f0aac81/info.yaml
 documentation: 
-  author:       "Fabian Alvarez"
-  title:        "7 segment seconds"
+  author:       "Daniel González"
+  title:        "FIR Filter"
   language:     "Verilog"
-  description:  "Count up to 10, one second at a time."
+  description:  "FIR Filter with 4 coefficients"
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
-      Uses a set of registers to divide the clock, and then some combinational logic
-      to convert from binary to decimal for the display.
-
-      Puts the bottom 8 bits of the counter on the bidirectional outputs.
-
+    Uses for coefficients which can be defined by the user with the swtichs, or by default 1s are used. The last 4 values of the input signal are multiplied by the coefficients and sum to generate the output value.
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test:  |
-      After reset, the counter should increase by one every second with a 10MHz input clock.
-
+    You have to send the input signal x[n] with the uio_in, and the output uio_out will be the output signal y[n]
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:               
-    - none
-    - none
-    - none
-    - none
-    - none
-    - none
-    - none
-    - none
+    - ui_in: Assign custom coefficients, ui_in[7:3] with sel [2:1] and enable [0]
+    - uo_out: does nothing
+    - ui_in: Input x[n]
+    - uio_oe: does nothing
+    - ena: enables the shift register for taking the inputs
+    - clk: clock
+    - rst_n: when 0 past values of x[n] are set to 0 and coefficients to 1s
 # A description of what the outputs do (e.g. status LED, SPI MISO, etc)
   outputs:
-    - segment a
-    - segment b
-    - segment c
-    - segment d
-    - segment e
-    - segment f
-    - segment g
-    - dot
+    - uio_out: Output y[n]
+
 # A description of what the bidirectional I/O pins do (e.g. I2C SDA, I2C SCL, etc)
   bidirectional:
     - second counter bit 0
@@ -72,9 +61,9 @@ documentation:
     - second counter bit 7
 
 # The following fields are optional
-  tag:          "timer, test"      # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
-  external_hw:  ""      # Describe any external hardware needed
-  discord:      ""      # Your discord handle, used for communication and automatically assigning tapeout role after a submission
-  doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
+  tag:          "digital filter"      # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
+  external_hw:  "Requires a microcontroller to send the x[n] values for the input signal"      # Describe any external hardware needed
+  discord:      ".dani1010"      # Your discord handle, used for communication and automatically assigning tapeout role after a submission
+  doc_link:     "https://github.com/DanielG1010/verilog-template"      # URL to longer form documentation, eg the README.md in your repository
   clock_hz:     10000000       # Clock frequency in Hz (if required)
   picture:      ""      # relative path to a picture in your repository
