@@ -27,7 +27,7 @@ La salida uo_out correspondiente a al display de 7 segmentos se está utilizando
 
 Este diagrama muestra casi la totalidad del circuito:
 
-![circuito]()
+![fir_filter](fir_filter.png)
 
 
 
